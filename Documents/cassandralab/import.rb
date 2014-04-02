@@ -30,7 +30,8 @@ File.open("/home/qui/Documents/cassandralab/movies_dump2.tsv") do |f|
 
       description = "TITLE: \"%s\"; YEAR: %s; RATING : %s; GENRES: %s; ACTORS: %s" %[title, year, rating, genres.join("|"), actors.join("|")]
       
-      client.execute("INSERT INTO movie_desc (title, description) VALUES ('%s', '%s')") %[title, description]
+      command = "INSERT INTO movie_desc (title, description) VALUES ('%s', '%s')" %[title, description]
+      client.execute(command) 
 
       #POPULATE actors and popularity
 
@@ -41,14 +42,17 @@ File.open("/home/qui/Documents/cassandralab/movies_dump2.tsv") do |f|
       end
       
       countactor.each do |j, i|
-      client.execute("INSERT INTO actors (name, filmed_in) VALUES ('%s', %d)") %[j, i]
-      client.execute("INSERT INTO popularity (fake_field, name, filmed_in) VALUES (1, '%s', %d)") %[1, j, i] 
+      command2 = "INSERT INTO actors (name, filmed_in) VALUES ('%s', %d)" %[j, i]
+      client.execute(command2)
+      command3 = "INSERT INTO popularity (fake_field, name, filmed_in) VALUES (1, '%s', %d)" %[1, j, i]
+      client.execute(command)  
       end
 
       #POPULATE genre2rating
 
       genres.each do |g|
-      client.execute("INSERT INTO ratings (genre, rating, title) VALUES ('%s', %.3f, '%s')") %[g, rating.map{|r| r.to_f}, title]
+      command4 = "INSERT INTO ratings (genre, rating, title) VALUES ('%s', %.3f, '%s')" %[g, rating.map{|r| r.to_f}, title]
+      client.execute(command) 
       end
       
 
